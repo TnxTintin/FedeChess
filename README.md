@@ -16,13 +16,11 @@ Como se va a permitir contribuciones. Se deja las recomendaciones de Gitlab para
 
 ## Programacion
 
-Se va a realizar en web con html5 y php en un principio. Posteriormente se vera cuales seran los frontends y backends mas apropiados.  
-A su vez se hara haciendo en Python para offline y posteriormente actualizar la web.
+Se va a realizar en Rust. Posteriormente se vera cuales seran los frontends y backends mas apropiados.  
 
-Se priorizara para que sea lo mas rapida posible y solucione rapidamente concurrencia masiva. No bloqueando registro y advirtiendo si otro usuario esta editando el mismo registro.
 
 ```sql
-La base de datos se iniciara en principio si los servidores pueden soportar  NO-SQL (MongoDB) ,  posteriormente se adoptara tambien SQL (MariaDb).
+La base de datos se iniciara en  mySQL,  desarrollado en *MariaDB*.
 ```
 
 
