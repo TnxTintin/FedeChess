@@ -1,20 +1,31 @@
 # Estructura de la Federacion por secciones o departamentos  
 
-### Presidencia
-### Secretaria
-### Tesoreria
-### Vocales
+## Junta Directiva
 
-### Arbitros
-### Escuelas
-### Entrenadores
-### Ratings (Elos)
-### Material
-### Documental
-### Medios de Comunicacion (Prensa, TV, Youtube ... etc:)
+## Presidencia
+## Secretaria
+## Tesoreria
+## Vocales
 
-### Informatica
-### Relacciones Publicas
-### Juridico
-### Laboral, Personal
+## Comite de Tecnicos
+## Comite de Arbitros
+
+## Comision Delegada
+
+### Delegaciones
+
+## Asamblea General
+
+
+# Escuelas
+# Entrenadores
+# Ratings (Elos)
+# Material
+# Documental
+# Medios de Comunicacion (Prensa, TV, Youtube ... etc:)
+
+# Informatica
+# Relacciones Publicas
+# Juridico
+# Laboral, Personal
 

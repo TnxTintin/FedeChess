@@ -6,3 +6,22 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+
+actas  		=  { path = "libs/actas" }
+arbitros  	=  { path = "libs/arbitros" }
+circulares  	=  { path = "libs/circulares" }
+clubes  	=  { path = "libs/clubes" }
+commons  	=  { path = "libs/commons" }
+delegaciones  	=  { path = "libs/delegaciones" }
+divisiones  	=  { path = "libs/divisiones" }
+documentaciones =  { path = "libs/documentaciones" }
+elo  		=  { path = "libs/elo" }
+federados  	=  { path = "libs/federados" }
+habilitados  	=  { path = "libs/habilitados" }
+inscripciones  	=  { path = "libs/inscripciones" }
+jugadores  	=  { path = "libs/jugadores" }
+logins  	=  { path = "libs/logins" }
+monitores  	=  { path = "libs/monitores" }
+reglamentos  	=  { path = "libs/reglamentos" }
+torneos  	=  { path = "libs/torneos" }
+transeuntes  	=  { path = "libs/transeuntes" }
