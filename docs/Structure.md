@@ -16,5 +16,5 @@
 ### Informatica
 ### Relacciones Publicas
 ### Juridico
-
+### Laboral, Personal
 

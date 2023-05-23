@@ -1,15 +1,4 @@
-<<<<<<< HEAD
+.gitignore
 .vscode/
-wxPython/
-python/
-rust/
-frontend/
-backend/
-html/
-c++/
-php/
-react.js/
-CONTRIBUTING-Draft.md
 =======
 /target
->>>>>>> 24add12 (Normalizando...)
