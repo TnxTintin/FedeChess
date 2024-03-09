@@ -1,4 +1,4 @@
-# Fede Chess (Chess Federation Admin)
+# Fede Chess (Chess Federation Administration)
 
 
 
@@ -20,7 +20,13 @@ Se va a realizar en Rust. Posteriormente se vera cuales seran los frontends y ba
 
 
 ```sql
-La base de datos se iniciara en  mySQL,  desarrollado en *MariaDB*.
+La base de datos se utilizara en MariaDB.
+Las alternativas MySQL, Postgress, MongoDb, etc.
 ```
+
+Crearemos una base de datos ficticios para las pruebas. Los datos los cogeremos de los datos publicos y accesibles. Los privados se generaran de forma aleatoria.
+Ejemplo son los Numeros de Documentos, Direcciones Telefonoes y emails. Todo aquellos que la LPRD nos obliga como programadores para entorno de pruebas.
+
+
 
 
