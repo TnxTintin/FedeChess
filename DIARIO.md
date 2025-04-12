@@ -2,6 +2,18 @@
 
 2024-03-30
 
+Disgregado entorno Web con su rama especifica:
+
+    remote: 
+    remote: To create a merge request for web, visit:
+    remote:   https://gitlab.com/Tinotin/fedechess/-/merge_requests/new?merge_request%5Bsource_branch%5D=web
+    remote: 
+
+    
+    To gitlab.com:Tinotin/fedechess.git
+    * [new branch]      web -> web
+
+
     ToDo: Autentificaciones y Login. Permisos por grupos. (Superadministrador, Administrador, Delegados Provinciales, Arbitros, Delegados de Clubes)
     ToDo: Hacer el Equivalente a la gestion de Federados.
     ToDo: Hacer gestion de Competiciones
