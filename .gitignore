@@ -1,6 +1,10 @@
 .gitignore
 .vscode/
-=======
+
+
+# =======
+
 target/
 sql/
 FedeChess.odb
+rsync-fedechess.tinux.net.zsh
