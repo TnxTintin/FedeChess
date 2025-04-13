@@ -1,4 +1,15 @@
-# Diario 
+# Diario
+
+2025-04-13
+    Poniendo a punto los branchs: 
+
+
+2025-04-12
+    Retomando la Programacion
+    Crear base de Datos de Jugadores segun GEFE.
+        Tipo Identificador (NIF/CIF/Passport),  NIF/CIF Nombre, Apellidos, Fecha Nacimiento, Sexo, email, email2, CP, Localidade, Direecion, Telefono, Movil, Nacionalidad, Codigo Regional, Elo Regional, Codigo Feda, Elo Feda, Codigo Fide, Elo Fide
+    Crear Base de Datos de Equipos por Temporadas. DH Andaluza, Primera Andaluza, Preferentes Provinciales, Primeras Provinciales, Segunda Provinciales.
+
 
 2024-03-30
 
@@ -13,9 +24,9 @@ Disgregado entorno Web con su rama especifica:
     To gitlab.com:Tinotin/fedechess.git
     * [new branch]      web -> web
 
-
+    ToDo: Exportacion de datos de Gefe a FedeChess,
     ToDo: Autentificaciones y Login. Permisos por grupos. (Superadministrador, Administrador, Delegados Provinciales, Arbitros, Delegados de Clubes)
-    ToDo: Hacer el Equivalente a la gestion de Federados.
+    ToDo: Hacer el Equivalente a la Gestion de Federados.
     ToDo: Hacer gestion de Competiciones
     ToDo: Generado de emparejamientos por equipos.
     ToDo: Suizos individuales
