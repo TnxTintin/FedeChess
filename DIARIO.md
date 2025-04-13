@@ -5,6 +5,7 @@
     actas, arbitros,  circulares,  clubes,  commons,  delegaciones,  divisiones,  documentaciones,  elo,  federados,  habilitados,  inscripciones,  jugadores,  logins, main,  monitores,  reglamentos,  torneos,  transeuntes,  web
     Creado Subdominio en tinux.net como fedechess.tinux.net
     Crear le fedechess en Local para las pruebas. local.fedechess.tinux.net
+
 2025-04-12
     Retomando la Programacion
     Crear base de Datos de Jugadores segun GEFE.
