@@ -12,5 +12,5 @@ rsync-fedechess.tinux.net.zsh
 *csv
 *ods
 *dbf
-
-docs/Estudios-FADA
+*.xlsx
+docs/Estudios
