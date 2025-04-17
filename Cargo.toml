@@ -7,6 +7,11 @@ edition = "2024"
 
 [dependencies]
 
+eframe = "0.20"  # Versión actual de eframe
+egui = "0.20"    # Versión actual de egui
+mysql = "23.0"   # Versión actual de mysql
+
+
 actas  		=  { path = "libs/actas" }
 arbitros  	=  { path = "libs/arbitros" }
 circulares  	=  { path = "libs/circulares" }

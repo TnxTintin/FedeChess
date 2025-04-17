@@ -1,5 +1,13 @@
 # Diario Main
 
+2025-04-17
+
+    - Acceso a traves de tunel a la base de datos en el servidor.
+        ssh -i ~/.ssh/id_ed25519 -f  -L 3310:127.0.0.1:3306 tinux@tinux.net -N
+        mariadb -h localhost -P 3310 fedechess -u fedechess -p --ssl=OFF
+
+        
+
 2025-04-13
 
     Poniendo a punto los branchs:
