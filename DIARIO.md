@@ -1,5 +1,9 @@
 # Diario Main
 
+2025-08-30
+
+    - Habilitando Lapce como IDE de edicion. Creado presixsamente en Rust 
+
 2025-04-17
 
     - Acceso a traves de tunel a la base de datos en el servidor.
