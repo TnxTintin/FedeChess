@@ -1,4 +1,12 @@
-# Diario Main
+﻿# Diario Main
+
+2025-11-06
+
+    -Acualizando los los gits, y posible movimiento a nuevo servidor.
+
+2025-10-18
+
+	- Ir pensando en la variante de emparejaminentos Tnx. Partir el numero de jugadores en bloques respecto al numero de rondas e ir reducciendo las distancias de fuerza de juego. Hacer un README o Milestone para describir cuales son los objetivos y que metodos para llevarlo a cabo. 
 
 2025-10-07
 
