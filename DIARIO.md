@@ -36,6 +36,9 @@ Inteegrando ToDo en Diario:
     - Se van a poner los branchs a ingles. y crear una tabla para no estar consultandolo permanentemente.
 
 
+=======
+# Diario Main
+>>>>>>> db297530ad3dab5f0968c99024401f5d055a847e
 
 2025-08-30
 

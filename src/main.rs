@@ -12,13 +12,25 @@ fn main() -> std::result::Result<(), Box<dyn StdError>> {
     let options = eframe::NativeOptions::default();
     
     // eframe::run_native no devuelve Result, así que no usamos ?
+=======
+
+fn main() -> Result<()> {
+    // Configuración de la conexión a la base de datos
+    let db_url = "mysql://usuario:contraseña@localhost:3306/fedechess"; // Cambia usuario y contraseña
+    let pool = Pool::new(db_url).map_err(|e| Error::InitError(e.to_string()))?;
+    // Crear la aplicación GUI
+    let options = eframe::NativeOptions::default();
+>>>>>>> db297530ad3dab5f0968c99024401f5d055a847e
     eframe::run_native(
         "Gestión de Jugadores",
         options,
         Box::new(|_cc| Box::new(App::new(pool))),
+<<<<<<< HEAD
     );
     
     Ok(())
+=======
+    )
 }
 
 struct App {
@@ -90,6 +102,20 @@ impl eframe::App for App {
                             }
                         }
                         Err(e) => self.mensaje = format!("Error al conectar con la base de datos: {}", e),
+                    let mut conn = self.db_pool.get_conn().expect("Error al obtener conexión");
+                    match conn.exec_drop(
+                        "INSERT INTO Jugadores (Id_Fada, Id_Fide, Player, Title) VALUES (?, ?, ?, ?)",
+                        (&self.id_fada, &self.id_fide, &self.player, &self.title),
+                    ) {
+                        Ok(_) => {
+                            self.mensaje = "¡Jugador agregado exitosamente!".to_string();
+                            // Limpiar los campos después de guardar
+                            self.id_fada.clear();
+                            self.id_fide.clear();
+                            self.player.clear();
+                            self.title.clear();
+                        }
+                        Err(e) => self.mensaje = format!("Error al insertar: {}", e),
                     }
                 }
             }
