@@ -1,5 +1,6 @@
 # FedeChess
-Aplicacion para administrar federaciones de ajedrez y sus delegaciones. Asi como todas las dependencias que estan subordinadas a la Federacion.  
+Aplicacion para administrar federaciones de ajedrez y sus delegaciones. Asi como todas las dependencias que estan subordinadas a la Federacion.
+La aplicacion va a ser desarrollada en Rust e interacionado con que web.
 
 ### Administracion y Gestion
 
@@ -24,5 +25,6 @@ Aplicacion para administrar federaciones de ajedrez y sus delegaciones. Asi como
 - Copas Andaluzas Individuales y por Equipos
 
 ### Recursos Informaticos
+
 - Swiss Manager ( Chess-reults.com )
 - Vega y Orion ( info64.org
