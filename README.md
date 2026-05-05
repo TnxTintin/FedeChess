@@ -6,6 +6,7 @@ Aplicacion para administrar federaciones de ajedrez y sus delegaciones. Asi como
 - Junta Directiva 
 - Delegaciones
 - Tesoreria y Administracion
+- Clubes
 
 ### Area deportiva 
 
@@ -16,11 +17,12 @@ Aplicacion para administrar federaciones de ajedrez y sus delegaciones. Asi como
 
 ### Competiciones  
 
-- Torneos Provinciales Individuales  
-- Torneos por Equipos  
-- Torneos Andaluces Individuales  
-- Torneos Andaluces por equipos
+- Torneos Provinciales Individuales y por Equipos
+- Torneos Andaluces Individuales  y por Equipos
 
-##@ Recursos Informaticos
+- Copas Provinciales Individuales y por Equipos
+- Copas Andaluzas Individuales y por Equipos
+
+### Recursos Informaticos
 - Swiss Manager ( Chess-reults.com )
-- Vega y Orion ( info64.org 
+- Vega y Orion ( info64.org
