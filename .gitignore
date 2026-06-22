@@ -13,5 +13,6 @@ sql/
 .include.fedechess.tinux.net.rsync
 scripts/
 docs/
-sql/
+# sql/
 .zed/
+migrations/
