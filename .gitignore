@@ -1,16 +1,16 @@
 .gitignore
-.vscode/
-
 
 # =======
 
 target/
 sql/
-FedeChess.odb
-rsync-fedechess.tinux.net.zsh
-
+*odb
 *csv
 *ods
 *dbf
 *.xlsx
-docs/Estudios
+.exclude.fedechess.tinux.net.rsync
+.include.fedechess.tinux.net.rsync
+scripts/
+docs/
+sql/
