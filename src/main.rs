@@ -1,127 +1,88 @@
-use eframe::{self, egui};
-use mysql::*;
-use mysql::prelude::*;
-use std::error::Error as StdError;
+mod config;
+mod db;
+mod error;
+mod models;
+mod repository;
+mod services;
+mod tui;
 
-fn main() -> std::result::Result<(), Box<dyn StdError>> {
-    // Configuración de la conexión a la base de datos
-    let db_url = "mysql://fedechess:FedTin2025@localhost:3306/fedechess";
-    let pool = Pool::new(db_url)?;
-    
-    // Crear la aplicación GUI
-    let options = eframe::NativeOptions::default();
-    
-    // eframe::run_native no devuelve Result, así que no usamos ?
-=======
+use crossterm::{
+    execute,
+    terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
+};
+use ratatui::{backend::CrosstermBackend, Terminal};
+use sqlx::MySqlPool;
+use std::io;
 
-fn main() -> Result<()> {
-    // Configuración de la conexión a la base de datos
-    let db_url = "mysql://usuario:contraseña@localhost:3306/fedechess"; // Cambia usuario y contraseña
-    let pool = Pool::new(db_url).map_err(|e| Error::InitError(e.to_string()))?;
-    // Crear la aplicación GUI
-    let options = eframe::NativeOptions::default();
->>>>>>> db297530ad3dab5f0968c99024401f5d055a847e
-    eframe::run_native(
-        "Gestión de Jugadores",
-        options,
-        Box::new(|_cc| Box::new(App::new(pool))),
-<<<<<<< HEAD
-    );
-    
+use crate::config::Config;
+use crate::db::pool::create_pool;
+use crate::error::AppResult;
+use crate::services::MemberService;
+use crate::tui::app::{App, ActiveScreen};
+use crate::tui::event::handle_events;
+use crate::tui::ui::draw;
+
+#[tokio::main]
+async fn main() -> AppResult<()> {
+    // Inicializar logging
+    tracing_subscriber::fmt()
+        .with_env_filter("fedechess=info")
+        .init();
+
+    // Cargar configuración
+    let config = Config::from_env()?;
+
+    // Conectar a la BBDD
+    let pool = create_pool(&config.database_url).await?;
+
+    // Ejecutar TUI
+    if let Err(e) = run_tui(&pool).await {
+        tracing::error!("Error en TUI: {}", e);
+    }
+
     Ok(())
-=======
-    )
 }
 
-struct App {
-    id_fada: String,
-    id_fide: String,
-    player: String,
-    title: String,
-    mensaje: String,
-    db_pool: Pool,
-}
+async fn run_tui(pool: &MySqlPool) -> AppResult<()> {
+    // Configurar terminal
+    enable_raw_mode()?;
+    let mut stdout = io::stdout();
+    execute!(stdout, EnterAlternateScreen)?;
+    let backend = CrosstermBackend::new(stdout);
+    let mut terminal = Terminal::new(backend)?;
 
-impl App {
-    fn new(db_pool: Pool) -> Self {
-        Self {
-            id_fada: String::new(),
-            id_fide: String::new(),
-            player: String::new(),
-            title: String::new(),
-            mensaje: String::new(),
-            db_pool,
+    // Cargar datos iniciales
+    let service = MemberService::new(pool);
+    let mut app = App::new();
+    match service.list_members().await {
+        Ok(members) => {
+            app.status_message = Some(format!("{} federados cargados", members.len()));
+            app.members = members;
+        }
+        Err(e) => {
+            app.status_message = Some(format!("Error: {}", e));
         }
     }
-}
 
-impl eframe::App for App {
-    fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
-        egui::CentralPanel::default().show(ctx, |ui| {
-            ui.heading("Agregar Nuevo Jugador");
+    // Main loop
+    while app.running {
+        terminal.draw(|frame| draw(frame, &app))?;
+        handle_events(&mut app)?;
 
-            // Campos de entrada
-            ui.label("ID FADA:");
-            ui.text_edit_singleline(&mut self.id_fada);
-
-            ui.label("ID FIDE:");
-            ui.text_edit_singleline(&mut self.id_fide);
-
-            ui.label("Nombre del Jugador:");
-            ui.text_edit_singleline(&mut self.player);
-
-            ui.label("Título:");
-            ui.text_edit_singleline(&mut self.title);
-
-            // Botón para guardar
-            if ui.button("Guardar").clicked() {
-                // Validar que todos los campos estén completos
-                if self.id_fada.is_empty()
-                    || self.id_fide.is_empty()
-                    || self.player.is_empty()
-                    || self.title.is_empty()
-                {
-                    self.mensaje = "Por favor, completa todos los campos.".to_string();
-                } else {
-                    // Insertar en la base de datos
-                    match self.db_pool.get_conn() {
-                        Ok(mut conn) => {
-                            match conn.exec_drop(
-                                "INSERT INTO players (id_fada, id_fide, player, title) VALUES (?, ?, ?, ?)",
-                                (&self.id_fada, &self.id_fide, &self.player, &self.title),
-                            ) {
-                                Ok(_) => {
-                                    self.mensaje = "¡Jugador agregado exitosamente!".to_string();
-                                    // Limpiar los campos después de guardar
-                                    self.id_fada.clear();
-                                    self.id_fide.clear();
-                                    self.player.clear();
-                                    self.title.clear();
-                                }
-                                Err(e) => self.mensaje = format!("Error al insertar: {}", e),
-                            }
-                        }
-                        Err(e) => self.mensaje = format!("Error al conectar con la base de datos: {}", e),
-                    let mut conn = self.db_pool.get_conn().expect("Error al obtener conexión");
-                    match conn.exec_drop(
-                        "INSERT INTO Jugadores (Id_Fada, Id_Fide, Player, Title) VALUES (?, ?, ?, ?)",
-                        (&self.id_fada, &self.id_fide, &self.player, &self.title),
-                    ) {
-                        Ok(_) => {
-                            self.mensaje = "¡Jugador agregado exitosamente!".to_string();
-                            // Limpiar los campos después de guardar
-                            self.id_fada.clear();
-                            self.id_fide.clear();
-                            self.player.clear();
-                            self.title.clear();
-                        }
-                        Err(e) => self.mensaje = format!("Error al insertar: {}", e),
-                    }
-                }
-            }
-
-            // Mostrar mensaje de estado
-            ui.label(&self.mensaje);
-        });
+        // Si volvemos a MemberList desde Search, recargar resultados
+        if app.active_screen == ActiveScreen::MemberList
+           && !app.search_query.is_empty()
+           && app.members.is_empty() {
+            let results = service.search_members(&app.search_query).await?;
+            app.members = results;
+            app.search_query.clear();
+        }
     }
+
+    // Restaurar terminal
+    disable_raw_mode()?;
+    execute!(terminal.backend_mut(), LeaveAlternateScreen)?;
+    terminal.show_cursor()?;
+
+    Ok(())
 }

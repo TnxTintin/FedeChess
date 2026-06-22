@@ -1,32 +1,46 @@
 [package]
 name = "fedechess"
-version = "0.1.1"
+version = "0.1.0"
+edition = "2024"
+[package]
+name = "fedechess"
+version = "0.1.0"
 edition = "2024"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [dependencies]
+# Async runtime
+tokio = { version = "1", features = ["full"] }
 
-eframe = "0.20"  # Versión actual de eframe
-egui = "0.20"    # Versión actual de egui
-mysql = "23.0"   # Versión actual de mysql
+# Database
+sqlx = { version = "0.8", features = [
+    "runtime-tokio",
+    "mysql",
+    "chrono",
+    "macros",
+    "migrate"
+] }
 
+# TUI
+ratatui = "0.29"
+crossterm = { version = "0.28", features = ["event-stream"] }
 
-actas  		=  { path = "libs/actas" }
-arbitros  	=  { path = "libs/arbitros" }
-circulares  	=  { path = "libs/circulares" }
-clubes  	=  { path = "libs/clubes" }
-commons  	=  { path = "libs/commons" }
-delegaciones  	=  { path = "libs/delegaciones" }
-divisiones  	=  { path = "libs/divisiones" }
-documentaciones =  { path = "libs/documentaciones" }
-elo  		=  { path = "libs/elo" }
-federados  	=  { path = "libs/federados" }
-habilitados  	=  { path = "libs/habilitados" }
-inscripciones  	=  { path = "libs/inscripciones" }
-jugadores  	=  { path = "libs/jugadores" }
-logins  	=  { path = "libs/logins" }
-monitores  	=  { path = "libs/monitores" }
-reglamentos  	=  { path = "libs/reglamentos" }
-torneos  	=  { path = "libs/torneos" }
-transeuntes  	=  { path = "libs/transeuntes" }
+# Config & env
+dotenvy = "0.15"
+
+# Serialization
+serde = { version = "1", features = ["derive"] }
+
+# Error handling
+thiserror = "2"
+anyhow = "1"
+
+# Dates
+chrono = { version = "0.4", features = ["serde"] }
+
+# Logging
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+[dev-dependencies]
+fake = { version = "3", features = ["derive"] }
+rand = "0.8"
