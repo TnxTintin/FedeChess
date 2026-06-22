@@ -42,7 +42,7 @@ Inteegrando ToDo en Diario:
 
 2025-08-30
 
-    - Habilitando Lapce como IDE de edicion. Creado presixsamente en Rust 
+    - Habilitando Lapce como IDE de edicion. Creado precisamente en Rust 
 
 2025-04-17
 
