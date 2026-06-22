@@ -1,26 +1,11 @@
 ﻿# Diario Fedechess
 
-Inteegrando ToDo en Diario:
 
 
-# TODO
+05-05-2026
 
-
-    ToDo: Exportacion de datos de Gefe a FedeChess,
-    ToDo: Autentificaciones y Login. Permisos por grupos. (Superadministrador, Administrador, Delegados Provinciales, Arbitros, Delegados de Clubes)
-    ToDo: Hacer el Equivalente a la Gestion de Federados.
-    ToDo: Hacer gestion de Competiciones
-    ToDo: Generado de emparejamientos por equipos.
-    ToDo: Suizos individuales
-    ToDo: Competiciones tipo Eliminacion o Copa
-    ToDo: Hacer un esquema de todos los datos. Cuales son los que pueden cambiar con el Tiempo, Especialmnete protegidos, etc.
-    ToDo: Crear entorno .env para no publicar variables de entorno de conexiones a base de datos.
-    ToDo: Aplicacion movil
-    ToDo: Habilitar diferentes idiomas con [Crowding: https://crowdin.com/] o pagina de traducciones e integracion con GitLab.
-    ToDo: Se puede usar gitlab con ramas de traduccion, hacer pueba para ver si funciona.
-
-
-
+- Creado github publico para desarrollo.   
+- Creado estructura en Local para soporta github.
 
 2025-11-06
 
@@ -102,5 +87,3 @@ Disgregado entorno Web con su rama especifica:
     Seleccionando los campos globales del federado.
     Agregado los ficheros de TODO y Monitors 
     Preparado para continuar con *Rust*
-
-
