@@ -20,3 +20,4 @@
 
 - Crear Base de datos Ficticia de datos para no tener problemas con la LOPD (Ley Orgánica de Protección de Datos de Carácter Personal)
 - Ramdon de Apellidos, Fechas de Naciomiento y Documentos de Identidad artificiales.
+- Las tablas players y members: Players seran para los emparejamientos y members o federated seran el estado de los miembros que han sdi federados o se han dado de baja. Tambien, habria que hacer un historico.

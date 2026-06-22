@@ -1,6 +1,6 @@
 use chrono::NaiveDate;
-use serde::{Deserialize, Serialize};
 use sqlx::FromRow;
+use serde::{Serialize, Deserialize};
 
 #[derive(Debug, Clone, FromRow, Serialize, Deserialize)]
 pub struct Member {
@@ -11,10 +11,10 @@ pub struct Member {
     pub document_type: String,
     pub document_number: String,
     pub birth_date: Option<NaiveDate>,
-    pub elo_standard: Option<i32>,
-    pub elo_rapid: Option<i32>,
-    pub elo_blitz: Option<i32>,
-    pub fide_id: Option<i32>,
+    pub elo_standard: Option<u32>,   // ← cambiado de i32 a u32
+    pub elo_rapid: Option<u32>,      // ← cambiado de i32 a u32
+    pub elo_blitz: Option<u32>,      // ← cambiado de i32 a u32
+    pub fide_id: Option<u32>,        // ← cambiado de i32 a u32
     pub title: String,
     pub club_id: Option<u32>,
     pub active: bool,
