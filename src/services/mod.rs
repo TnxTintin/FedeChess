@@ -1,3 +1,3 @@
-pub mod member_service;
+pub mod federate_service;
 
-pub use member_service::MemberService;
+pub use federate_service::FederateService;

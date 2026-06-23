@@ -1,9 +1,17 @@
 ﻿# Diario Fedechess
 
+- Reorganizar los TODO.
+- Crear Tunnel para la base de datos. srv.tinux.net
+- Migrar la base de datos de localhost a srv.tinux.net
+  - Creado comando para historial de mariadb:
+    Para Shell: mariadb-history='cat ~/.mariadb_history | sed "s|\\\\040| |g"'
+    Para Mariadb CLI: system cat ~/.mariadb_history | sed "s|\\040| |g"
+
 22-06-2026
 
+- Conseguido primer TUI Funcional
 - Comprimido los sql a tar.gz
-  - Reorganizando la estructura de los branchs
+- Reorganizando la estructura de los branchs
 
 05-05-2026
 
@@ -23,12 +31,6 @@
     - Cambiado el nombre de tablas y campos a minusculas en la base de datos.
     - Se van a poner los branchs a ingles. y crear una tabla para no estar consultandolo permanentemente.
 
-=======
-
-# Diario Main
-
-> > > > > > > db297530ad3dab5f0968c99024401f5d055a847e
-
 2025-08-30
 
     - Habilitando Lapce como IDE de edicion. Creado precisamente en Rust
@@ -38,8 +40,6 @@
     - Acceso a traves de tunel a la base de datos en el servidor.
         ssh -i ~/.ssh/id_ed25519 -f  -L 3310:127.0.0.1:3306 tinux@tinux.net -N
         mariadb -h localhost -P 3310 fedechess -u fedechess -p --ssl=OFF
-
-
 
 2025-04-13
 
@@ -58,16 +58,10 @@
 
 2024-03-30
 
-Disgregado entorno Web con su rama especifica:
+- Disgregado entorno Web con su rama especifica:
 
-    remote:
-    remote: To create a merge request for web, visit:
-    remote:   https://gitlab.com/Tinotin/fedechess/-/merge_requests/new?merge_request%5Bsource_branch%5D=web
-    remote:
-
-
-    To gitlab.com:Tinotin/fedechess.git
-    * [new branch]      web -> web
+  To gitlab.com:Tinotin/fedechess.git
+  - [new branch] web -> web
 
 2024-03-09
 
@@ -80,8 +74,8 @@ Disgregado entorno Web con su rama especifica:
 
 2023-05-23
 
-    Agregado README Licences
-    Redactando Documentacion de Federated Members
-    Seleccionando los campos globales del federado.
-    Agregado los ficheros de TODO y Monitors
-    Preparado para continuar con *Rust*
+- Agregado README Licences
+- Redactando Documentacion de Federated Members
+- Seleccionando los campos globales del federado.
+- Agregado los ficheros de TODO y Monitors
+- Preparado para continuar con _Rust_

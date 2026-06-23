@@ -1,3 +1,3 @@
-pub mod member_repo;
+pub mod federate_repo;
 
-pub use member_repo::MemberRepository;
+pub use federate_repo::FederateRepository;

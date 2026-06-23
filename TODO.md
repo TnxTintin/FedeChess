@@ -12,12 +12,15 @@
 - Aplicacion movil
 - Habilitar diferentes idiomas con [Crowding: https://crowdin.com/] o pagina de traducciones e integracion con GitLab.
 - Se puede usar gitlab con ramas de traduccion, hacer pueba para ver si funciona.
-- Frontend: Terminal o CLI...posteriormente a GUI de Gtk
+- Frontend: Terminal o CLI/TUI ...posteriormente a GUI de Gtk
 - Tabla de Torneos.
 - Tabla de Jugadores.
 - Criterios para ser evaluados.
 - Criterios de Clasificacion.
-
+- La conexion con la base de datso
 - Crear Base de datos Ficticia de datos para no tener problemas con la LOPD (Ley Orgánica de Protección de Datos de Carácter Personal)
 - Ramdon de Apellidos, Fechas de Naciomiento y Documentos de Identidad artificiales.
-- Las tablas players y members: Players seran para los emparejamientos y members o federated seran el estado de los miembros que han sdi federados o se han dado de baja. Tambien, habria que hacer un historico.
+- Las tablas players y members: Players seran para los emparejamientos y members o federated seran el estado de los miembros que han sdi federados o se han dado de baja.
+- Tambien, habria que hacer un historico.
+- Para las competiciones: apartado donde se puedan subir la fotos de las actas y planillas.
+- Posiblidad d pasarlo a pgn ( Portable Game Notation )

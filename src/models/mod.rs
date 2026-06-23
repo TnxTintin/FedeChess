@@ -1,3 +1,3 @@
-pub mod member;
+pub mod federate;
 
-pub use member::Member;
+pub use federate::Federate;
