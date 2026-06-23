@@ -2,6 +2,8 @@
 
 23-06-2026
 
+- Cerrado el importador de la Base de datos de la FIDE. Al final se tuvo que recurrir al XML.
+- Modificado campo de jugadores para que se el id de provincia en vez de provincia.
 - Generado los Clubes y descapitalizandolos de Origen GEFE ( Incorporar mas adelante los historicos).
 - Reorganizar los TODO.
 - Crear Tunnel para la base de datos. srv.tinux.net

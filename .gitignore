@@ -14,5 +14,5 @@ sql/
 scripts/
 docs/
 # sql/
-
+elos/
 migrations/

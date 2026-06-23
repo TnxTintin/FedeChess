@@ -1,3 +1,3 @@
-pub mod federate_repo;
+pub mod federado_repo;
 
-pub use federate_repo::FederateRepository;
+pub use federado_repo::FederadoRepository;

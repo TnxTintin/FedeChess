@@ -1,3 +1,3 @@
-pub mod federate;
+pub mod federado;
 
-pub use federate::Federate;
+pub use federado::Federado;

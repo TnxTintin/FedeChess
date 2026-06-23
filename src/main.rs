@@ -1,26 +1,17 @@
 mod config;
 mod db;
 mod error;
+mod fide;
 mod models;
 mod repository;
 mod services;
 mod tui;
 
-use crossterm::{
-    execute,
-    terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
-};
-use ratatui::{backend::CrosstermBackend, Terminal};
-use sqlx::MySqlPool;
-use std::io;
-
+use std::env;
 use crate::config::Config;
 use crate::db::pool::create_pool;
 use crate::error::AppResult;
-use crate::services::FederateService;
-use crate::tui::app::{App, ActiveScreen};
-use crate::tui::event::handle_events;
-use crate::tui::ui::draw;
+use crate::fide::{FideParser, FideImporter};
 
 #[tokio::main]
 async fn main() -> AppResult<()> {
@@ -31,49 +22,42 @@ async fn main() -> AppResult<()> {
     let config = Config::from_env()?;
     let pool = create_pool(&config.database_url).await?;
 
-    if let Err(e) = run_tui(&pool).await {
+    // Modo CLI: importar archivo FIDE
+    let args: Vec<String> = env::args().collect();
+    if args.len() > 1 && args[1] == "import-fide" {
+        if args.len() < 3 {
+            eprintln!("Uso: fedechess import-fide <archivo.txt>");
+            std::process::exit(1);
+        }
+        
+        let file_path = &args[2];
+        return import_fide_file(&pool, file_path).await;
+    }
+
+    // Modo por defecto: TUI
+    if let Err(e) = tui::run(&pool).await {
         tracing::error!("Error en TUI: {}", e);
     }
 
     Ok(())
 }
 
-async fn run_tui(pool: &MySqlPool) -> AppResult<()> {
-    enable_raw_mode()?;
-    let mut stdout = io::stdout();
-    execute!(stdout, EnterAlternateScreen)?;
-    let backend = CrosstermBackend::new(stdout);
-    let mut terminal = Terminal::new(backend)?;
-
-    let service = FederateService::new(pool);
-    let mut app = App::new();
+async fn import_fide_file(pool: &sqlx::MySqlPool, file_path: &str) -> AppResult<()> {
+    tracing::info!("Importando archivo FIDE: {}", file_path);
     
-    match service.list_federates().await {
-        Ok(federates) => {
-            app.status_message = Some(format!("{} federados cargados", federates.len()));
-            app.federates = federates;
-        }
-        Err(e) => {
-            app.status_message = Some(format!("Error: {}", e));
-        }
-    }
-
-    while app.running {
-        terminal.draw(|frame| draw(frame, &app))?;
-        handle_events(&mut app)?;
-
-        if app.active_screen == ActiveScreen::FederateList 
-           && !app.search_query.is_empty() 
-           && app.federates.is_empty() {
-            let results = service.search_federates(&app.search_query).await?;
-            app.federates = results;
-            app.search_query.clear();
-        }
-    }
-
-    disable_raw_mode()?;
-    execute!(terminal.backend_mut(), LeaveAlternateScreen)?;
-    terminal.show_cursor()?;
-
+    let mut parser = FideParser::new();
+    let players = parser.parse_file(file_path)?;
+    
+    tracing::info!("Jugadores parseados: {}", players.len());
+    
+    let importer = FideImporter::new(pool);
+    let imported = importer.import(&players).await?;
+    
+    tracing::info!("✅ Importados {} jugadores a fide_players", imported);
+    
+    // Sincronizar Elos con federados
+    let synced = importer.sync_elos().await?;
+    tracing::info!("✅ Sincronizados {} federados con Elos FIDE", synced);
+    
     Ok(())
 }

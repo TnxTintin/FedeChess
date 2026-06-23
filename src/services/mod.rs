@@ -1,3 +1,3 @@
-pub mod federate_service;
+pub mod federado_service;
 
-pub use federate_service::FederateService;
+pub use federado_service::FederadoService;

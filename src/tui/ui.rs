@@ -14,20 +14,20 @@ pub fn draw(frame: &mut Frame, app: &App) {
         ])
         .split(frame.area());
 
-    draw_header(frame, chunks[0], app);
+    draw_header(frame, chunks[0]);
     
     match app.active_screen {
         ActiveScreen::Dashboard => draw_dashboard(frame, chunks[1]),
-        ActiveScreen::FederateList => draw_federate_list(frame, chunks[1], app),
+        ActiveScreen::FederadoList => draw_federado_list(frame, chunks[1], app),
         ActiveScreen::Search => draw_search(frame, chunks[1], app),
-        ActiveScreen::FederateDetail => draw_federate_detail(frame, chunks[1], app),
+        ActiveScreen::FederadoDetail => draw_federado_detail(frame, chunks[1], app),
     }
 
     draw_footer(frame, chunks[2], app);
 }
 
-fn draw_header(frame: &mut Frame, area: Rect, _app: &App) {
-    let title = Paragraph::new(" ♟  FedeChess - Federación de Ajedrez  ♟")
+fn draw_header(frame: &mut Frame, area: Rect) {
+    let title = Paragraph::new(" ♟  FedeChess - Federacion de Ajedrez  ♟")
         .style(Style::default().fg(Color::Cyan).add_modifier(Modifier::BOLD))
         .block(Block::default().borders(Borders::ALL).title(" FedeChess "));
     frame.render_widget(title, area);
@@ -36,11 +36,18 @@ fn draw_header(frame: &mut Frame, area: Rect, _app: &App) {
 fn draw_footer(frame: &mut Frame, area: Rect, app: &App) {
     let help = match app.active_screen {
         ActiveScreen::Dashboard => " [1] Federados  [2] Buscar  [q] Salir ",
-        ActiveScreen::FederateList => " [↑/↓] Navegar  [Enter] Ver  [/] Buscar  [Esc] Volver ",
+        ActiveScreen::FederadoList => " [↑/↓] Nav  [Enter] Ver  [/] Buscar  [r] Reset  [Esc] Volver ",
         ActiveScreen::Search => " [Enter] Buscar  [Esc] Cancelar ",
-        ActiveScreen::FederateDetail => " [Esc] Volver ",
+        ActiveScreen::FederadoDetail => " [Esc] Volver ",
     };
-    let status = app.status_message.as_deref().unwrap_or("Listo");
+    
+    // Añadir filtro activo al mensaje de estado
+    let status = if let Some(filter) = &app.active_filter {
+        format!("Filtro: '{}' | {}", filter, app.status_message.as_deref().unwrap_or(""))
+    } else {
+        app.status_message.clone().unwrap_or_else(|| "Listo".to_string())
+    };
+    
     let text = format!("{} | {}", status, help);
     
     let footer = Paragraph::new(text)
@@ -51,42 +58,42 @@ fn draw_footer(frame: &mut Frame, area: Rect, app: &App) {
 
 fn draw_dashboard(frame: &mut Frame, area: Rect) {
     let items = vec![
-        ListItem::new("  [1] Gestión de Federados"),
-        ListItem::new("  [2] Gestión de Competiciones"),
-        ListItem::new("  [3] Órganos de la Federación"),
+        ListItem::new("  [1] Gestion de Federados"),
+        ListItem::new("  [2] Gestion de Competiciones"),
+        ListItem::new("  [3] Organos de la Federacion"),
         ListItem::new("  [4] Clubs"),
         ListItem::new("  [5] Informes"),
         ListItem::new(""),
         ListItem::new("  [q] Salir"),
     ];
     let list = List::new(items)
-        .block(Block::default().borders(Borders::ALL).title(" Menú Principal "));
+        .block(Block::default().borders(Borders::ALL).title(" Menu Principal "));
     frame.render_widget(list, area);
 }
 
-fn draw_federate_list(frame: &mut Frame, area: Rect, app: &App) {
+fn draw_federado_list(frame: &mut Frame, area: Rect, app: &App) {
     let header = Row::new(vec![
         Cell::from("ID").style(Style::default().fg(Color::Yellow)),
-        Cell::from("Cod.Fed").style(Style::default().fg(Color::Yellow)),
+        Cell::from("Id.FADA").style(Style::default().fg(Color::Yellow)),
         Cell::from("Apellidos, Nombre").style(Style::default().fg(Color::Yellow)),
         Cell::from("Elo").style(Style::default().fg(Color::Yellow)),
-        Cell::from("Categoría").style(Style::default().fg(Color::Yellow)),
+        Cell::from("Categoria").style(Style::default().fg(Color::Yellow)),
         Cell::from("Estado").style(Style::default().fg(Color::Yellow)),
     ]).height(1);
 
-    let rows: Vec<Row> = app.federates.iter().enumerate().map(|(i, f)| {
+    let rows: Vec<Row> = app.federados.iter().enumerate().map(|(i, f)| {
         let style = if i == app.selected_index {
             Style::default().bg(Color::DarkGray).fg(Color::White)
         } else {
             Style::default()
         };
-        let status = if f.active { "✓ Activo" } else { "✗ Baja" };
+        let status = if f.activo { "✓ Activo" } else { "✗ Baja" };
         Row::new(vec![
             Cell::from(f.id.to_string()),
-            Cell::from(f.federation_code.clone()),
-            Cell::from(format!("{}, {}", f.last_name, f.first_name)),
+            Cell::from(f.id_fada.clone()),
+            Cell::from(format!("{}, {}", f.apellidos, f.nombre)),
             Cell::from(f.elo_standard.map_or("-".to_string(), |e| e.to_string())),
-            Cell::from(f.category.clone().unwrap_or_else(|| "-".to_string())),
+            Cell::from(f.categoria.clone().unwrap_or_else(|| "-".to_string())),
             Cell::from(status),
         ]).style(style)
     }).collect();
@@ -100,7 +107,11 @@ fn draw_federate_list(frame: &mut Frame, area: Rect, app: &App) {
         Constraint::Length(10),
     ];
 
-    let title = format!(" Federados ({}) ", app.federates.len());
+    let filter_info = app.active_filter.as_ref()
+        .map(|f| format!(" [filtro: '{}']", f))
+        .unwrap_or_default();
+    let title = format!(" Federados ({}){} ", app.federados.len(), filter_info);
+    
     let table = Table::new(rows, widths)
         .header(header)
         .block(Block::default().borders(Borders::ALL).title(title));
@@ -110,63 +121,61 @@ fn draw_federate_list(frame: &mut Frame, area: Rect, app: &App) {
 fn draw_search(frame: &mut Frame, area: Rect, app: &App) {
     let text = format!("Buscar: {}█", app.search_query);
     let paragraph = Paragraph::new(text)
-        .block(Block::default().borders(Borders::ALL).title(" Búsqueda "));
+        .block(Block::default().borders(Borders::ALL).title(" Busqueda "));
     frame.render_widget(paragraph, area);
 }
 
-fn draw_federate_detail(frame: &mut Frame, area: Rect, app: &App) {
-    let content = if let Some(f) = app.federates.get(app.selected_index) {
+fn draw_federado_detail(frame: &mut Frame, area: Rect, app: &App) {
+    let content = if let Some(f) = app.federados.get(app.selected_index) {
         format!(
             "ID:              {}\n\
-             Cod. Federativo: {}\n\
-             FIDE ID:         {}\n\
+             Id. FADA:        {}\n\
+             Id. FIDE:        {}\n\
              \n\
              Nombre:          {} {}\n\
              Documento:       {} {}\n\
              Fecha nacim.:    {}\n\
-             Género:          {}\n\
+             Genero:          {}\n\
              \n\
              Email:           {}\n\
-             Teléfono:        {}\n\
-             Dirección:       {}\n\
+             Telefono:        {}\n\
+             Direccion:       {}\n\
              CP:              {} {}\n\
              Provincia:       {}\n\
              \n\
-             Elo Estándar:    {}\n\
-             Elo Rápido:      {}\n\
+             Elo Estandar:    {}\n\
+             Elo Rapido:      {}\n\
              Elo Blitz:       {}\n\
-             Título FIDE:     {}\n\
-             Título Nac.:     {}\n\
-             Categoría:       {}\n\
+             Titulo FIDE:     {}\n\
+             Titulo Nac.:     {}\n\
+             Categoria:       {}\n\
              \n\
-             Tipo Federac.:   {}\n\
-             Año Federac.:    {}\n\
+             Alta Federativa: {}\n\
              Estado:          {}",
             f.id,
-            f.federation_code,
-            f.fide_id.map_or("-".to_string(), |e| e.to_string()),
-            f.first_name, f.last_name,
-            f.document_type, f.document_number,
-            f.birth_date.map_or("-".to_string(), |d| d.format("%d/%m/%Y").to_string()),
-            f.gender.as_deref().unwrap_or("-"),
+            f.id_fada,
+            f.id_fide.map_or("-".to_string(), |e| e.to_string()),
+            f.nombre, f.apellidos,
+            f.tipo_documento, f.numero_documento,
+            f.fecha_nacimiento.map_or("-".to_string(), |d| d.format("%d/%m/%Y").to_string()),
+            f.genero.as_deref().unwrap_or("-"),
             f.email.as_deref().unwrap_or("-"),
-            f.phone.as_deref().unwrap_or("-"),
-            f.address.as_deref().unwrap_or("-"),
-            f.postal_code.as_deref().unwrap_or("-"),
-            f.city.as_deref().unwrap_or("-"),
-            f.province.as_deref().unwrap_or("-"),
+            f.telefono.as_deref().unwrap_or("-"),
+            f.direecion.as_deref().unwrap_or("-"),
+            f.cp.as_deref().unwrap_or("-"),
+            f.localidad.as_deref().unwrap_or("-"),
+            f.provincia.as_deref().unwrap_or("-"),
             f.elo_standard.map_or("-".to_string(), |e| e.to_string()),
             f.elo_rapid.map_or("-".to_string(), |e| e.to_string()),
             f.elo_blitz.map_or("-".to_string(), |e| e.to_string()),
-            f.fide_title,
-            f.national_title,
-            f.category.as_deref().unwrap_or("-"),
-            f.federation_type,
-            f.federation_year.map_or("-".to_string(), |y| y.to_string()),
-            if f.active { "Activo" } else { "Baja" },
+            f.titulo_fide,
+            f.titulo_nacional,
+            f.categoria.as_deref().unwrap_or("-"),
+            f.alta_federativa.map_or("-".to_string(), |y| y.to_string()),
+            if f.activo { "Activo" } else { "Baja" },
         )
     } else {
-        "Sin selección".to_string()
+        "Sin seleccion".to_string()
     };
 
     let paragraph = Paragraph::new(content)

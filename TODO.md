@@ -25,3 +25,4 @@
 - Para las competiciones: apartado donde se puedan subir la fotos de las actas y planillas.
 - Posiblidad d pasarlo a pgn ( Portable Game Notation )
 - Generar los paneles de control de cada usuario.
+- Detectar cuando cambia y se actualiza la FIDE para actualizar los ELOS

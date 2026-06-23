@@ -37,6 +37,10 @@ chrono = { version = "0.4", features = ["serde"] }
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 
+encoding_rs = "0.8"       # Para manejar codificación si hace falta
+quick-xml = { version = "0.37", features = ["serialize"] }
+
+
 [dev-dependencies]
 fake = { version = "3", features = ["derive"] }
 rand = "0.8"
