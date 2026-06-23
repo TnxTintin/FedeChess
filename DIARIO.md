@@ -1,5 +1,8 @@
 ﻿# Diario Fedechess
 
+23-06-2026
+
+- Generado los Clubes y descapitalizandolos de Origen GEFE ( Incorporar mas adelante los historicos).
 - Reorganizar los TODO.
 - Crear Tunnel para la base de datos. srv.tinux.net
 - Migrar la base de datos de localhost a srv.tinux.net
