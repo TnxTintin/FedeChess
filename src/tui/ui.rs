@@ -74,9 +74,14 @@ fn draw_dashboard(frame: &mut Frame, area: Rect) {
 fn draw_federado_list(frame: &mut Frame, area: Rect, app: &App) {
     let header = Row::new(vec![
         Cell::from("ID").style(Style::default().fg(Color::Yellow)),
-        Cell::from("Id.FADA").style(Style::default().fg(Color::Yellow)),
+        Cell::from("FADA").style(Style::default().fg(Color::Yellow)),
+        Cell::from("FIDE").style(Style::default().fg(Color::Yellow)),
         Cell::from("Apellidos, Nombre").style(Style::default().fg(Color::Yellow)),
-        Cell::from("Elo").style(Style::default().fg(Color::Yellow)),
+        Cell::from("Fnac").style(Style::default().fg(Color::Yellow)),
+        Cell::from("Elo FADA").style(Style::default().fg(Color::Yellow)),
+        Cell::from("Elo Std").style(Style::default().fg(Color::Yellow)),
+        Cell::from("Elo Rpd").style(Style::default().fg(Color::Yellow)),
+        Cell::from("Elo Blz").style(Style::default().fg(Color::Yellow)),
         Cell::from("Categoria").style(Style::default().fg(Color::Yellow)),
         Cell::from("Estado").style(Style::default().fg(Color::Yellow)),
     ]).height(1);
@@ -91,20 +96,30 @@ fn draw_federado_list(frame: &mut Frame, area: Rect, app: &App) {
         Row::new(vec![
             Cell::from(f.id.to_string()),
             Cell::from(f.id_fada.clone()),
+            Cell::from(f.id_fide.map_or("-".to_string(), |id| id.to_string())),
             Cell::from(format!("{}, {}", f.apellidos, f.nombre)),
+            Cell::from(f.fnac.map_or("-".to_string(), |y| y.to_string())),
+            Cell::from(f.elo_fada.map_or("-".to_string(), |e| e.to_string())),
             Cell::from(f.elo_standard.map_or("-".to_string(), |e| e.to_string())),
+            Cell::from(f.elo_rapid.map_or("-".to_string(), |e| e.to_string())),
+            Cell::from(f.elo_blitz.map_or("-".to_string(), |e| e.to_string())),
             Cell::from(f.categoria.clone().unwrap_or_else(|| "-".to_string())),
             Cell::from(status),
         ]).style(style)
     }).collect();
 
     let widths = [
-        Constraint::Length(6),
-        Constraint::Length(12),
-        Constraint::Percentage(40),
-        Constraint::Length(8),
-        Constraint::Length(12),
-        Constraint::Length(10),
+        Constraint::Length(5),  // ID
+        Constraint::Length(10), // FADA
+        Constraint::Length(8),  // FIDE
+        Constraint::Min(25),    // Apellidos, Nombre
+        Constraint::Length(6),  // Fnac
+        Constraint::Length(8),  // Elo FADA
+        Constraint::Length(8),  // Elo Std
+        Constraint::Length(8),  // Elo Rpd
+        Constraint::Length(8),  // Elo Blz
+        Constraint::Length(10), // Categoria
+        Constraint::Length(8),  // Estado
     ];
 
     let filter_info = app.active_filter.as_ref()
@@ -157,11 +172,11 @@ fn draw_federado_detail(frame: &mut Frame, area: Rect, app: &App) {
             f.id_fide.map_or("-".to_string(), |e| e.to_string()),
             f.nombre, f.apellidos,
             f.tipo_documento, f.numero_documento,
-            f.fecha_nacimiento.map_or("-".to_string(), |d| d.format("%d/%m/%Y").to_string()),
+            f.fnac.map_or("-".to_string(), |year| year.to_string()),
             f.genero.as_deref().unwrap_or("-"),
             f.email.as_deref().unwrap_or("-"),
             f.telefono.as_deref().unwrap_or("-"),
-            f.direecion.as_deref().unwrap_or("-"),
+            f.direccion.as_deref().unwrap_or("-"),
             f.cp.as_deref().unwrap_or("-"),
             f.localidad.as_deref().unwrap_or("-"),
             f.provincia.as_deref().unwrap_or("-"),
