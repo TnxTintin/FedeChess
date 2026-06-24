@@ -1,5 +1,5 @@
 use crossterm::event::{self, Event, KeyCode, KeyEventKind};
-use crate::tui::app::{App, ActiveScreen};
+use crate::tui::app::{App, ActiveScreen, SortColumn};
 use std::time::Duration;
 
 pub fn handle_events(app: &mut App) -> std::io::Result<bool> {
@@ -34,18 +34,32 @@ fn handle_federado_list_keys(app: &mut App, code: KeyCode) {
         KeyCode::Char('q') | KeyCode::Esc => app.active_screen = ActiveScreen::Dashboard,
         KeyCode::Down | KeyCode::Char('j') => app.next_federado(),
         KeyCode::Up | KeyCode::Char('k') => app.previous_federado(),
+        KeyCode::PageDown => app.page_down(),
+        KeyCode::PageUp => app.page_up(),
         KeyCode::Enter => app.active_screen = ActiveScreen::FederadoDetail,
         KeyCode::Char('/') => {
-            // Al entrar a búsqueda, limpiar la query anterior
             app.search_query.clear();
             app.active_screen = ActiveScreen::Search;
         }
         KeyCode::Char('r') => {
-            // Resetear filtro: volver a ver todos
             if app.active_filter.is_some() {
                 app.reset_filter();
             }
         }
+        // Teclas de ordenamiento
+        KeyCode::Char('n') => app.sort_by(SortColumn::Id),
+        KeyCode::Char('f') => app.sort_by(SortColumn::IdFada),
+        KeyCode::Char('i') => app.sort_by(SortColumn::IdFide),
+        KeyCode::Char('a') => app.sort_by(SortColumn::Apellidos),
+        KeyCode::Char('N') => app.sort_by(SortColumn::Nombre),
+        KeyCode::Char('F') => app.sort_by(SortColumn::Fnac),
+        KeyCode::Char('e') => app.sort_by(SortColumn::EloFada),
+        KeyCode::Char('s') => app.sort_by(SortColumn::EloStandard),
+        KeyCode::Char('p') => app.sort_by(SortColumn::EloRapid),
+        KeyCode::Char('b') => app.sort_by(SortColumn::EloBlitz),
+        KeyCode::Char('c') => app.sort_by(SortColumn::Categoria),
+        KeyCode::Char('t') => app.sort_by(SortColumn::Estado),
+        KeyCode::Char('l') => app.sort_by(SortColumn::Club),
         _ => {}
     }
 }
@@ -54,7 +68,6 @@ fn handle_search_keys(app: &mut App, code: KeyCode) {
     match code {
         KeyCode::Esc => app.active_screen = ActiveScreen::FederadoList,
         KeyCode::Enter => {
-            // Marcar que hay una búsqueda pendiente
             app.search_pending = true;
             app.active_screen = ActiveScreen::FederadoList;
         }

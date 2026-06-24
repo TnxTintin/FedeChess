@@ -2,7 +2,7 @@ use ratatui::{
     prelude::*,
     widgets::{Block, Borders, Paragraph, Row, Table, Cell, List, ListItem},
 };
-use crate::tui::app::{App, ActiveScreen};
+use crate::tui::app::{App, ActiveScreen, SortColumn};
 
 pub fn draw(frame: &mut Frame, app: &App) {
     let chunks = Layout::default()
@@ -36,12 +36,11 @@ fn draw_header(frame: &mut Frame, area: Rect) {
 fn draw_footer(frame: &mut Frame, area: Rect, app: &App) {
     let help = match app.active_screen {
         ActiveScreen::Dashboard => " [1] Federados  [2] Buscar  [q] Salir ",
-        ActiveScreen::FederadoList => " [↑/↓] Nav  [Enter] Ver  [/] Buscar  [r] Reset  [Esc] Volver ",
+        ActiveScreen::FederadoList => " [↑/↓] Nav  [PgUp/PgDn] Página  [Enter] Ver  [/] Buscar  [r] Reset  [n/f/i/a/N/F/e/s/p/b/c/t/l] Ordenar  [Esc] Volver ",
         ActiveScreen::Search => " [Enter] Buscar  [Esc] Cancelar ",
         ActiveScreen::FederadoDetail => " [Esc] Volver ",
     };
     
-    // Añadir filtro activo al mensaje de estado
     let status = if let Some(filter) = &app.active_filter {
         format!("Filtro: '{}' | {}", filter, app.status_message.as_deref().unwrap_or(""))
     } else {
@@ -72,6 +71,19 @@ fn draw_dashboard(frame: &mut Frame, area: Rect) {
 }
 
 fn draw_federado_list(frame: &mut Frame, area: Rect, app: &App) {
+    // Calcular cuántas filas caben en el área
+    let table_height = area.height.saturating_sub(5) as usize;
+    let page_size = table_height.max(1);
+    
+    // Obtener solo los elementos de la página actual
+    let start = app.current_page * page_size;
+    let end = (start + page_size).min(app.federados.len());
+    let page_items = if start < app.federados.len() {
+        &app.federados[start..end]
+    } else {
+        &[]
+    };
+
     let header = Row::new(vec![
         Cell::from("ID").style(Style::default().fg(Color::Yellow)),
         Cell::from("FADA").style(Style::default().fg(Color::Yellow)),
@@ -86,8 +98,9 @@ fn draw_federado_list(frame: &mut Frame, area: Rect, app: &App) {
         Cell::from("Estado").style(Style::default().fg(Color::Yellow)),
     ]).height(1);
 
-    let rows: Vec<Row> = app.federados.iter().enumerate().map(|(i, f)| {
-        let style = if i == app.selected_index {
+    let rows: Vec<Row> = page_items.iter().enumerate().map(|(i, f)| {
+        let global_index = start + i;
+        let style = if global_index == app.selected_index {
             Style::default().bg(Color::DarkGray).fg(Color::White)
         } else {
             Style::default()
@@ -108,92 +121,4 @@ fn draw_federado_list(frame: &mut Frame, area: Rect, app: &App) {
         ]).style(style)
     }).collect();
 
-    let widths = [
-        Constraint::Length(5),  // ID
-        Constraint::Length(10), // FADA
-        Constraint::Length(8),  // FIDE
-        Constraint::Min(25),    // Apellidos, Nombre
-        Constraint::Length(6),  // Fnac
-        Constraint::Length(8),  // Elo FADA
-        Constraint::Length(8),  // Elo Std
-        Constraint::Length(8),  // Elo Rpd
-        Constraint::Length(8),  // Elo Blz
-        Constraint::Length(10), // Categoria
-        Constraint::Length(8),  // Estado
-    ];
-
-    let filter_info = app.active_filter.as_ref()
-        .map(|f| format!(" [filtro: '{}']", f))
-        .unwrap_or_default();
-    let title = format!(" Federados ({}){} ", app.federados.len(), filter_info);
-    
-    let table = Table::new(rows, widths)
-        .header(header)
-        .block(Block::default().borders(Borders::ALL).title(title));
-    frame.render_widget(table, area);
-}
-
-fn draw_search(frame: &mut Frame, area: Rect, app: &App) {
-    let text = format!("Buscar: {}█", app.search_query);
-    let paragraph = Paragraph::new(text)
-        .block(Block::default().borders(Borders::ALL).title(" Busqueda "));
-    frame.render_widget(paragraph, area);
-}
-
-fn draw_federado_detail(frame: &mut Frame, area: Rect, app: &App) {
-    let content = if let Some(f) = app.federados.get(app.selected_index) {
-        format!(
-            "ID:              {}\n\
-             Id. FADA:        {}\n\
-             Id. FIDE:        {}\n\
-             \n\
-             Nombre:          {} {}\n\
-             Documento:       {} {}\n\
-             Fecha nacim.:    {}\n\
-             Genero:          {}\n\
-             \n\
-             Email:           {}\n\
-             Telefono:        {}\n\
-             Direccion:       {}\n\
-             CP:              {} {}\n\
-             Provincia:       {}\n\
-             \n\
-             Elo Estandar:    {}\n\
-             Elo Rapido:      {}\n\
-             Elo Blitz:       {}\n\
-             Titulo FIDE:     {}\n\
-             Titulo Nac.:     {}\n\
-             Categoria:       {}\n\
-             \n\
-             Alta Federativa: {}\n\
-             Estado:          {}",
-            f.id,
-            f.id_fada,
-            f.id_fide.map_or("-".to_string(), |e| e.to_string()),
-            f.nombre, f.apellidos,
-            f.tipo_documento, f.numero_documento,
-            f.fnac.map_or("-".to_string(), |year| year.to_string()),
-            f.genero.as_deref().unwrap_or("-"),
-            f.email.as_deref().unwrap_or("-"),
-            f.telefono.as_deref().unwrap_or("-"),
-            f.direccion.as_deref().unwrap_or("-"),
-            f.cp.as_deref().unwrap_or("-"),
-            f.localidad.as_deref().unwrap_or("-"),
-            f.provincia.as_deref().unwrap_or("-"),
-            f.elo_standard.map_or("-".to_string(), |e| e.to_string()),
-            f.elo_rapid.map_or("-".to_string(), |e| e.to_string()),
-            f.elo_blitz.map_or("-".to_string(), |e| e.to_string()),
-            f.titulo_fide,
-            f.titulo_nacional,
-            f.categoria.as_deref().unwrap_or("-"),
-            f.alta_federativa.map_or("-".to_string(), |y| y.to_string()),
-            if f.activo { "Activo" } else { "Baja" },
-        )
-    } else {
-        "Sin seleccion".to_string()
-    };
-
-    let paragraph = Paragraph::new(content)
-        .block(Block::default().borders(Borders::ALL).title(" Detalle del Federado "));
-    frame.render_widget(paragraph, area);
-}
+    let
