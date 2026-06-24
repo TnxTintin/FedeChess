@@ -15,7 +15,7 @@ pub fn draw(frame: &mut Frame, app: &App) {
         .split(frame.area());
 
     draw_header(frame, chunks[0]);
-    
+
     match app.active_screen {
         ActiveScreen::Dashboard => draw_dashboard(frame, chunks[1]),
         ActiveScreen::FederadoList => draw_federado_list(frame, chunks[1], app),
@@ -40,15 +40,15 @@ fn draw_footer(frame: &mut Frame, area: Rect, app: &App) {
         ActiveScreen::Search => " [Enter] Buscar  [Esc] Cancelar ",
         ActiveScreen::FederadoDetail => " [Esc] Volver ",
     };
-    
+
     let status = if let Some(filter) = &app.active_filter {
         format!("Filtro: '{}' | {}", filter, app.status_message.as_deref().unwrap_or(""))
     } else {
         app.status_message.clone().unwrap_or_else(|| "Listo".to_string())
     };
-    
+
     let text = format!("{} | {}", status, help);
-    
+
     let footer = Paragraph::new(text)
         .style(Style::default().fg(Color::White).bg(Color::DarkGray))
         .block(Block::default().borders(Borders::ALL));
@@ -71,11 +71,10 @@ fn draw_dashboard(frame: &mut Frame, area: Rect) {
 }
 
 fn draw_federado_list(frame: &mut Frame, area: Rect, app: &App) {
-    // Calcular cuántas filas caben en el área
+    // Calcular paginación dinámica
     let table_height = area.height.saturating_sub(5) as usize;
     let page_size = table_height.max(1);
-    
-    // Obtener solo los elementos de la página actual
+
     let start = app.current_page * page_size;
     let end = (start + page_size).min(app.federados.len());
     let page_items = if start < app.federados.len() {
@@ -121,4 +120,64 @@ fn draw_federado_list(frame: &mut Frame, area: Rect, app: &App) {
         ]).style(style)
     }).collect();
 
-    let
+    let widths = [
+        Constraint::Length(5),
+        Constraint::Length(10),
+        Constraint::Length(8),
+        Constraint::Min(25),
+        Constraint::Length(6),
+        Constraint::Length(8),
+        Constraint::Length(8),
+        Constraint::Length(8),
+        Constraint::Length(8),
+        Constraint::Length(10),
+        Constraint::Length(8),
+    ];
+
+    let filter_info = app.active_filter.as_ref()
+        .map(|f| format!(" [filtro: '{}']", f))
+        .unwrap_or_default();
+
+    let sort_info = if let Some(col) = app.sort_column {
+        let arrow = if app.sort_ascending { "↑" } else { "↓" };
+        let col_name = match col {
+            SortColumn::Id => "ID",
+            SortColumn::IdFada => "FADA",
+            SortColumn::IdFide => "FIDE",
+            SortColumn::Apellidos => "Apellido",
+            SortColumn::Nombre => "Nombre",
+            SortColumn::Fnac => "Fnac",
+            SortColumn::EloFada => "EloF",
+            SortColumn::EloStandard => "EloS",
+            SortColumn::EloRapid => "EloR",
+            SortColumn::EloBlitz => "EloB",
+            SortColumn::Categoria => "Cat",
+            SortColumn::Estado => "Estado",
+            SortColumn::Club => "Club",
+        };
+        format!(" [{}{}]", col_name, arrow)
+    } else {
+        String::new()
+    };
+
+    let total_pages = if app.federados.is_empty() {
+        1
+    } else {
+        (app.federados.len() + page_size - 1) / page_size
+    };
+    let current_page = if total_pages == 0 { 0 } else { app.current_page.min(total_pages - 1) };
+
+    let title = format!(
+        " Federados ({}){}{} | Página {}/{} ",
+        app.federados.len(),
+        filter_info,
+        sort_info,
+        current_page + 1,
+        total_pages
+    );
+
+    let table = Table::new(rows, widths)
+        .header(header)
+        .block(Block::default().borders(Borders::ALL).title(title));
+    frame.render_widget(table, area);
+}
