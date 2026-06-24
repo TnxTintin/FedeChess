@@ -14,6 +14,11 @@ pub fn handle_events(app: &mut App) -> std::io::Result<bool> {
                 ActiveScreen::FederadoList => handle_federado_list_keys(app, key.code),
                 ActiveScreen::Search => handle_search_keys(app, key.code),
                 ActiveScreen::FederadoDetail => handle_detail_keys(app, key.code),
+                ActiveScreen::Consultas | 
+                ActiveScreen::Arbitros | 
+                ActiveScreen::Monitores | 
+                ActiveScreen::Ayuda | 
+                ActiveScreen::Contacto => handle_placeholder_keys(app, key.code),
             }
         }
     }
@@ -24,11 +29,18 @@ fn handle_dashboard_keys(app: &mut App, code: KeyCode) {
     match code {
         KeyCode::Char('q') | KeyCode::Esc => app.running = false,
         KeyCode::Char('1') => app.active_screen = ActiveScreen::FederadoList,
-        KeyCode::Char('2') => app.active_screen = ActiveScreen::Search,
+        KeyCode::Char('2') => app.active_screen = ActiveScreen::Search, // Por ahora, usar Search
+        KeyCode::Char('3') => {} // TODO: Organos de la Federacion
+        KeyCode::Char('4') => {} // TODO: Clubs
+        KeyCode::Char('5') => {} // TODO: Informes
+        KeyCode::Char('6') => app.active_screen = ActiveScreen::Consultas,
+        KeyCode::Char('7') => app.active_screen = ActiveScreen::Arbitros,
+        KeyCode::Char('8') => app.active_screen = ActiveScreen::Monitores,
+        KeyCode::Char('9') => app.active_screen = ActiveScreen::Ayuda,
+        KeyCode::Char('0') => app.active_screen = ActiveScreen::Contacto,
         _ => {}
     }
 }
-
 fn handle_federado_list_keys(app: &mut App, code: KeyCode) {
     match code {
         KeyCode::Char('q') | KeyCode::Esc => app.active_screen = ActiveScreen::Dashboard,
@@ -80,6 +92,13 @@ fn handle_search_keys(app: &mut App, code: KeyCode) {
 fn handle_detail_keys(app: &mut App, code: KeyCode) {
     match code {
         KeyCode::Esc | KeyCode::Char('q') => app.active_screen = ActiveScreen::FederadoList,
+        _ => {}
+    }
+}
+
+fn handle_placeholder_keys(app: &mut App, code: KeyCode) {
+    match code {
+        KeyCode::Esc | KeyCode::Char('q') => app.active_screen = ActiveScreen::Dashboard,
         _ => {}
     }
 }

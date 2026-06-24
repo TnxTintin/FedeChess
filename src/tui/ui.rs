@@ -16,12 +16,17 @@ pub fn draw(frame: &mut Frame, app: &App) {
 
     draw_header(frame, chunks[0]);
 
-    match app.active_screen {
-        ActiveScreen::Dashboard => draw_dashboard(frame, chunks[1]),
-        ActiveScreen::FederadoList => draw_federado_list(frame, chunks[1], app),
-        ActiveScreen::Search => draw_search(frame, chunks[1], app),
-        ActiveScreen::FederadoDetail => draw_federado_detail(frame, chunks[1], app),
-    }
+match app.active_screen {
+    ActiveScreen::Dashboard => draw_dashboard(frame, chunks[1], app),
+    ActiveScreen::FederadoList => draw_federado_list(frame, chunks[1], app),
+    ActiveScreen::Search => draw_search(frame, chunks[1], app),
+    ActiveScreen::FederadoDetail => draw_federado_detail(frame, chunks[1], app),
+    ActiveScreen::Consultas => draw_placeholder(frame, chunks[1], "Consultas"),
+    ActiveScreen::Arbitros => draw_placeholder(frame, chunks[1], "Arbitros"),
+    ActiveScreen::Monitores => draw_placeholder(frame, chunks[1], "Monitores"),
+    ActiveScreen::Ayuda => draw_placeholder(frame, chunks[1], "Ayuda"),
+    ActiveScreen::Contacto => draw_placeholder(frame, chunks[1], "Contacto"),
+}
 
     draw_footer(frame, chunks[2], app);
 }
@@ -35,10 +40,15 @@ fn draw_header(frame: &mut Frame, area: Rect) {
 
 fn draw_footer(frame: &mut Frame, area: Rect, app: &App) {
     let help = match app.active_screen {
-        ActiveScreen::Dashboard => " [1] Federados  [2] Buscar  [q] Salir ",
+        ActiveScreen::Dashboard => " [1-0] Opciones  [q] Salir ",
         ActiveScreen::FederadoList => " [↑/↓] Nav  [PgUp/PgDn] Página  [Enter] Ver  [/] Buscar  [r] Reset  [n/f/i/a/N/F/e/s/p/b/c/t/l] Ordenar  [Esc] Volver ",
         ActiveScreen::Search => " [Enter] Buscar  [Esc] Cancelar ",
         ActiveScreen::FederadoDetail => " [Esc] Volver ",
+        ActiveScreen::Consultas | 
+        ActiveScreen::Arbitros | 
+        ActiveScreen::Monitores | 
+        ActiveScreen::Ayuda | 
+        ActiveScreen::Contacto => " [Esc] Volver al menú ",
     };
 
     let status = if let Some(filter) = &app.active_filter {
@@ -71,7 +81,6 @@ fn draw_dashboard(frame: &mut Frame, area: Rect) {
 }
 
 fn draw_federado_list(frame: &mut Frame, area: Rect, app: &App) {
-    // Calcular paginación dinámica
     let table_height = area.height.saturating_sub(5) as usize;
     let page_size = table_height.max(1);
 
@@ -181,3 +190,79 @@ fn draw_federado_list(frame: &mut Frame, area: Rect, app: &App) {
         .block(Block::default().borders(Borders::ALL).title(title));
     frame.render_widget(table, area);
 }
+
+fn draw_search(frame: &mut Frame, area: Rect, app: &App) {
+    let text = format!("Buscar: {}█", app.search_query);
+    let paragraph = Paragraph::new(text)
+        .block(Block::default().borders(Borders::ALL).title(" Busqueda "));
+    frame.render_widget(paragraph, area);
+}
+
+fn draw_federado_detail(frame: &mut Frame, area: Rect, app: &App) {
+    let content = if let Some(f) = app.federados.get(app.selected_index) {
+        format!(
+            "ID:              {}\n\
+             Id. FADA:        {}\n\
+             Id. FIDE:        {}\n\
+             \n\
+             Nombre:          {} {}\n\
+             Documento:       {} {}\n\
+             Fecha nacim.:    {}\n\
+             Genero:          {}\n\
+             \n\
+             Email:           {}\n\
+             Telefono:        {}\n\
+             Direccion:       {}\n\
+             CP:              {} {}\n\
+             Provincia:       {}\n\
+             \n\
+             Elo Estandar:    {}\n\
+             Elo Rapido:      {}\n\
+             Elo Blitz:       {}\n\
+             Titulo FIDE:     {}\n\
+             Titulo Nac.:     {}\n\
+             Categoria:       {}\n\
+             \n\
+             Alta Federativa: {}\n\
+             Estado:          {}",
+            f.id,
+            f.id_fada,
+            f.id_fide.map_or("-".to_string(), |e| e.to_string()),
+            f.nombre, f.apellidos,
+            f.tipo_documento, f.numero_documento,
+            f.fnac.map_or("-".to_string(), |year| year.to_string()),
+            f.genero.as_deref().unwrap_or("-"),
+            f.email.as_deref().unwrap_or("-"),
+            f.telefono.as_deref().unwrap_or("-"),
+            f.direccion.as_deref().unwrap_or("-"),
+            f.cp.as_deref().unwrap_or("-"),
+            f.localidad.as_deref().unwrap_or("-"),
+            f.provincia.as_deref().unwrap_or("-"),
+            f.elo_standard.map_or("-".to_string(), |e| e.to_string()),
+            f.elo_rapid.map_or("-".to_string(), |e| e.to_string()),
+            f.elo_blitz.map_or("-".to_string(), |e| e.to_string()),
+            f.titulo_fide,
+            f.titulo_nacional,
+            f.categoria.as_deref().unwrap_or("-"),
+            f.alta_federativa.map_or("-".to_string(), |y| y.to_string()),
+            if f.activo { "Activo" } else { "Baja" },
+        )
+    } else {
+        "Sin seleccion".to_string()
+    };
+
+    let paragraph = Paragraph::new(content)
+        .block(Block::default().borders(Borders::ALL).title(" Detalle del Federado "));
+    frame.render_widget(paragraph, area);
+}
+
+fn draw_placeholder(frame: &mut Frame, area: Rect, title: &str) {
+    let text = format!(
+        "\n\n  Sección: {}\n\n  Esta sección estará disponible próximamente.\n\n  [Esc] Volver al menú principal",
+        title
+    );
+    let paragraph = Paragraph::new(text)
+        .block(Block::default().borders(Borders::ALL).title(format!(" {} ", title)));
+    frame.render_widget(paragraph, area);
+}
+

@@ -6,7 +6,14 @@ pub enum ActiveScreen {
     FederadoList,
     FederadoDetail,
     Search,
+    Consultas,
+    Arbitros,
+    Monitores,
+    Ayuda,
+    Contacto,
 }
+
+
 
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub enum SortColumn {
