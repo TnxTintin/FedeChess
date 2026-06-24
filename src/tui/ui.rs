@@ -65,13 +65,18 @@ fn draw_footer(frame: &mut Frame, area: Rect, app: &App) {
     frame.render_widget(footer, area);
 }
 
-fn draw_dashboard(frame: &mut Frame, area: Rect) {
+fn draw_dashboard(frame: &mut Frame, area: Rect, _app: &App) {
     let items = vec![
         ListItem::new("  [1] Gestion de Federados"),
         ListItem::new("  [2] Gestion de Competiciones"),
         ListItem::new("  [3] Organos de la Federacion"),
         ListItem::new("  [4] Clubs"),
         ListItem::new("  [5] Informes"),
+        ListItem::new("  [6] Consultas"),
+        ListItem::new("  [7] Arbitros"),
+        ListItem::new("  [8] Monitores"),
+        ListItem::new("  [9] Ayuda"),
+        ListItem::new("  [0] Contacto"),
         ListItem::new(""),
         ListItem::new("  [q] Salir"),
     ];
